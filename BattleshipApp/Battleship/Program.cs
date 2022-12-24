@@ -11,9 +11,22 @@ Deliverables
     If a user inputs an incorrect value, user will be notified of the error and re-prompted
 */
 
+/*
+ * Introductory explanation, press any key to start
+ * Main game loop:
+ *   Top of screen shows number of turns remaining, hits, and misses
+ *   Show game board
+ *   Get inputs
+ *   Check if hit or miss
+ *   Check if game over
+ *   Display updated game board
+ * Show game over message
+ * Ask if user wants to play again
+ */
+
 using Battleship;
 
-GameBoard board= new GameBoard();
-board.DisplayBoard();
+GameController game = new GameController();
+game.Run();
 
 

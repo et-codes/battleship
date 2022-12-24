@@ -8,7 +8,7 @@ namespace Battleship
 {
     public class GameBoard
     {
-        private static int size = 10;
+        public static int size = 10;
         public char[,] board = new char[size, size];
 
         public GameBoard()
@@ -29,11 +29,16 @@ namespace Battleship
                 Console.Write((i+1).ToString().PadRight(2));
                 for (int j = 0; j < size; j++)
                 {
-                    Console.Write($" {board[i, j]} ");
+                    Console.Write($" {board[j, i]} ");
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine("0  1  2  3  4  5  6  7  8  9  10");
+            Console.WriteLine("+  1  2  3  4  5  6  7  8  9  10");
+        }
+
+        public void Update(int x, int y, bool isHit)
+        {
+            board[x, y] = isHit ? 'X' : 'O';
         }
     }
 }
