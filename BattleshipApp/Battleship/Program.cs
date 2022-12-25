@@ -26,7 +26,15 @@ Deliverables
 
 using Battleship;
 
-GameController game = new GameController();
-game.Run();
+InterfaceMethods.DisplayIntro();
+InterfaceMethods.PressKeyToContinue();
+
+bool playAgain;
+do
+{
+    GameController game = new GameController();
+    game.Run();
+    playAgain = InterfaceMethods.AskToPlayAgain();
+} while (playAgain);
 
 

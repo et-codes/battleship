@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Battleship
+﻿namespace Battleship
 {
     internal class GameController
     {
-        private bool gameOver = false;
-        private int turnsLeft = 8;
-        private int hits;
-        private int misses;
-        private GameBoard gameBoard = new GameBoard();
-        private (int x, int y)[] battleship = new (int x, int y)[5]; 
+        private (int x, int y)[] battleship = new (int x, int y)[5];
 
         public GameController()
         {
-            // Set battleship position
+            // Set battleship orientation and position
             var rand = new Random();
             int maxCoordinate = GameBoard.size - 5 - 1;
             int xStart;
@@ -38,79 +27,71 @@ namespace Battleship
 
             for (int i = 0; i < 5; i++)
             {
-                battleship[i] = isHorizontal 
-                    ? (xStart + i, yStart) 
+                battleship[i] = isHorizontal
+                    ? (xStart + i, yStart)
                     : (xStart, yStart + i);
             }
         }
 
         public void Run()
         {
+            bool gameOver = false;
+            int roundsLeft = 8;
+            int hits = 0;
+            int misses = 0;
+            bool keepPlaying = false;
+            GameBoard gameBoard = new();
+
             while (!gameOver)
             {
-                DisplayHeader();
+                InterfaceMethods.DisplayHeader(roundsLeft, hits, misses);
                 gameBoard.DisplayBoard();
-                DisplayMethods.DisplaySeparator();
+                InterfaceMethods.DisplaySeparator();
 
                 var (x, y) = GetCoordinates();
-                bool isHit = FireUpon(x, y);
+                bool isHit = battleship.Contains((x, y));
+
+                if (isHit && gameBoard.AlreadyHit(x, y))
+                {
+                    Console.WriteLine("UHHH, you already hit that part of the ship, Cap'n.");
+                    Console.WriteLine("While it may feel good, it doesn't make the ship sink any faster!");
+                }
+                else if (isHit)
+                {
+                    Console.WriteLine("BOOM!  DIRECT HIT!");
+                    hits++;
+                }
+                else
+                {
+                    Console.WriteLine("SPLASH!  MISS!");
+                    misses++;
+                }
+                roundsLeft--;
+
                 gameBoard.Update(x, y, isHit);
 
-                turnsLeft--;
-                if (turnsLeft < 5 - hits || hits == 5)
+                if (hits == 5 || roundsLeft == 0)
                 {
                     gameOver = true;
                 }
-                DisplayMethods.PressKeyToContinue();
-                Console.Clear();
+                else if (roundsLeft - 5 + hits < 0 && !keepPlaying)
+                {
+                    keepPlaying = InterfaceMethods.AskToContinue();
+                    gameOver = !keepPlaying;
+                }
+                else
+                {
+                    InterfaceMethods.PressKeyToContinue();
+                }
             }
-            DisplayMethods.DisplayResult(hits);
-        }
-
-        private void DisplayHeader()
-        {
-            Console.WriteLine($"Turns left: {turnsLeft}  Hits: {hits}  Misses: {misses}");
-            DisplayMethods.DisplaySeparator();
+            InterfaceMethods.DisplayResult(hits);
         }
 
         private (int, int) GetCoordinates()
         {
-            int x = GetCoordinate('X');
-            int y = GetCoordinate('Y');
+            int x = InterfaceMethods.GetCoordinate('X');
+            int y = InterfaceMethods.GetCoordinate('Y');
             return (x, y);
         }
-
-        private int GetCoordinate(char axis)
-        {
-            bool isValid;
-            int output;
-
-            do
-            {
-                Console.Write($"Enter {axis} coordinate to fire upon [1 - 10]: ");
-                string? xText = Console.ReadLine();
-                isValid = int.TryParse(xText, out output);
-            } while (!isValid && output < 1 && output > 10);
-
-            // "Translate" the coordinate from 1-10 space to 0-9 space
-            return output - 1;
-        }
-
-        public bool FireUpon(int x, int y)
-        {
-            if (battleship.Contains((x, y)))
-            {
-                Console.WriteLine("Hit!");
-                hits++;
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Miss!");
-                misses++;
-                return false;
-            }
-        }
-
     }
 }
