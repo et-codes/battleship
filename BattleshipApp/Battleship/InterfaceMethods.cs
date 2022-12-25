@@ -16,15 +16,20 @@
 
         public static int GetCoordinate(char axis)
         {
-            bool isValid;
+            bool isInvalid;
             int output;
 
             do
             {
+                isInvalid = false;
                 Console.Write($"Enter {axis} coordinate to fire upon [1 - 10]: ");
                 string? xText = Console.ReadLine();
-                isValid = int.TryParse(xText, out output);
-            } while (!isValid && output < 1 && output > 10);
+                if (!int.TryParse(xText, out output) || output < 1 || output > 10)
+                {
+                    isInvalid = true;
+                    Console.WriteLine("Please enter an integer between 1 and 10.");
+                }
+            } while (isInvalid);
 
             // "Translate" the coordinate from 1-10 space to 0-9 space
             return output - 1;
