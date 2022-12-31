@@ -17,7 +17,7 @@
         public void Run()
         {
             bool gameOver = false;
-            bool keepPlaying = false;
+            bool stopPlaying = true;
 
             while (!gameOver)
             {
@@ -45,14 +45,12 @@
 
                 gameBoard.Update(x, y, isHit);
 
-                if (hits == 5 || roundsLeft == 0)
+                gameOver = hits == 5 || roundsLeft == 0;
+
+                if (!gameOver && roundsLeft - 5 + hits < 0 && stopPlaying)
                 {
-                    gameOver = true;
-                }
-                else if (roundsLeft - 5 + hits < 0 && !keepPlaying)
-                {
-                    keepPlaying = interfaceMethods.AskToContinue();
-                    gameOver = !keepPlaying;
+                    stopPlaying = !interfaceMethods.AskToContinue();
+                    gameOver = stopPlaying;
                 }
                 else
                 {
