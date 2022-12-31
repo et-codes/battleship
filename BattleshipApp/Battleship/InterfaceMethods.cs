@@ -49,18 +49,18 @@
             Console.WriteLine();
         }
 
-        public void DisplayResult(int hits)
+        public void DisplayResult(int hits, Ship ship)
         {
             Console.Clear();
             if (hits == 5)
             {
                 Console.WriteLine("YOU WON!\n");
-                Console.WriteLine("You sunk the enemy battleship!  Great job, Captain!");
+                Console.WriteLine($"You sunk the enemy {ship.Name}!  Great job, Captain!");
             }
             else
             {
                 Console.WriteLine("YOU LOST!\n");
-                Console.WriteLine("You don't have enough shells left to sink the battleship!");
+                Console.WriteLine($"You don't have enough shells left to sink the {ship.Name}!");
                 if (hits == 0)
                 {
                     Console.WriteLine("You couldn't even find it, and have been demoted.  Go swab the deck!");

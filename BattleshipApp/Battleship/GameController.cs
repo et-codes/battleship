@@ -2,7 +2,7 @@
 {
     internal class GameController
     {
-        private Ship battleship = new Ship(5);
+        private Ship ship = new Ship(5, "Battleship");
         private readonly InterfaceMethods interfaceMethods;
         int roundsLeft = 8;
         int hits = 0;
@@ -24,7 +24,7 @@
                 DisplayGameBoard();
 
                 var (x, y) = interfaceMethods.GetCoordinates();
-                bool isHit = battleship.IsHit(x, y);
+                bool isHit = ship.IsHit(x, y);
 
                 if (isHit && gameBoard.AlreadyHit(x, y))
                 {
@@ -57,7 +57,7 @@
                     interfaceMethods.PressKeyToContinue();
                 }
             }
-            interfaceMethods.DisplayResult(hits);
+            interfaceMethods.DisplayResult(hits, ship);
         }
 
         private void DisplayGameBoard()
