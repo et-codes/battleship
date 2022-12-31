@@ -2,54 +2,29 @@
 {
     internal class GameController
     {
-        private (int x, int y)[] battleship = new (int x, int y)[5];
+        private Ship battleship = new Ship(5);
+        private readonly InterfaceMethods interfaceMethods;
+        int roundsLeft = 8;
+        int hits = 0;
+        int misses = 0;
+        GameBoard gameBoard = new();
 
-        public GameController()
+        public GameController(InterfaceMethods interfaceInstance)
         {
-            // Set battleship orientation and position
-            var rand = new Random();
-            int maxCoordinate = GameBoard.size - 5 - 1;
-            int xStart;
-            int yStart;
-
-            bool isHorizontal = rand.Next(2) == 1;
-
-            if (isHorizontal)
-            {
-                xStart = rand.Next(maxCoordinate);
-                yStart = rand.Next(GameBoard.size - 1);
-            }
-            else
-            {
-                xStart = rand.Next(GameBoard.size - 1);
-                yStart = rand.Next(maxCoordinate);
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                battleship[i] = isHorizontal
-                    ? (xStart + i, yStart)
-                    : (xStart, yStart + i);
-            }
+            interfaceMethods = interfaceInstance;
         }
 
         public void Run()
         {
             bool gameOver = false;
-            int roundsLeft = 8;
-            int hits = 0;
-            int misses = 0;
             bool keepPlaying = false;
-            GameBoard gameBoard = new();
 
             while (!gameOver)
             {
-                InterfaceMethods.DisplayHeader(roundsLeft, hits, misses);
-                gameBoard.DisplayBoard();
-                InterfaceMethods.DisplaySeparator();
+                DisplayGameBoard();
 
-                var (x, y) = GetCoordinates();
-                bool isHit = battleship.Contains((x, y));
+                var (x, y) = interfaceMethods.GetCoordinates();
+                bool isHit = battleship.IsHit(x, y);
 
                 if (isHit && gameBoard.AlreadyHit(x, y))
                 {
@@ -76,22 +51,22 @@
                 }
                 else if (roundsLeft - 5 + hits < 0 && !keepPlaying)
                 {
-                    keepPlaying = InterfaceMethods.AskToContinue();
+                    keepPlaying = interfaceMethods.AskToContinue();
                     gameOver = !keepPlaying;
                 }
                 else
                 {
-                    InterfaceMethods.PressKeyToContinue();
+                    interfaceMethods.PressKeyToContinue();
                 }
             }
-            InterfaceMethods.DisplayResult(hits);
+            interfaceMethods.DisplayResult(hits);
         }
 
-        private (int, int) GetCoordinates()
+        private void DisplayGameBoard()
         {
-            int x = InterfaceMethods.GetCoordinate('X');
-            int y = InterfaceMethods.GetCoordinate('Y');
-            return (x, y);
+            interfaceMethods.DisplayHeader(roundsLeft, hits, misses);
+            gameBoard.DisplayBoard();
+            interfaceMethods.DisplaySeparator();
         }
     }
 }

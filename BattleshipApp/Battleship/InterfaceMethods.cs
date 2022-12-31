@@ -1,20 +1,27 @@
 ﻿namespace Battleship
 {
-    public static class InterfaceMethods
+    public class InterfaceMethods
     {
-        public static void DisplaySeparator()
+        public void DisplaySeparator()
         {
             Console.WriteLine($"\n{new String('*', 80)}\n");
         }
 
-        public static void DisplayHeader(int turnsLeft, int hits, int misses)
+        public void DisplayHeader(int turnsLeft, int hits, int misses)
         {
             Console.Clear();
             Console.WriteLine($"Rounds left: {turnsLeft}  Hits: {hits}  Misses: {misses}");
             DisplaySeparator();
         }
 
-        public static int GetCoordinate(char axis)
+        public (int, int) GetCoordinates()
+        {
+            int x = GetCoordinate('X');
+            int y = GetCoordinate('Y');
+            return (x, y);
+        }
+
+        public int GetCoordinate(char axis)
         {
             bool isInvalid;
             int output;
@@ -31,18 +38,18 @@
                 }
             } while (isInvalid);
 
-            // "Translate" the coordinate from 1-10 space to 0-9 space
+            // Translate the coordinate from 1-10 space to 0-9 space
             return output - 1;
         }
 
-        public static void PressKeyToContinue()
+        public void PressKeyToContinue()
         {
             Console.Write("Press any key to continue...");
             Console.ReadKey();
             Console.WriteLine();
         }
 
-        public static void DisplayResult(int hits)
+        public void DisplayResult(int hits)
         {
             Console.Clear();
             if (hits == 5)
@@ -66,7 +73,7 @@
             }
         }
 
-        public static void DisplayIntro()
+        public void DisplayIntro()
         {
             DisplaySeparator();
             Console.WriteLine("Welcome to the game of BATTLESHIP!");
@@ -79,22 +86,22 @@
             Console.WriteLine("Let us know when you are ready to begin your mission, Captain!\n");
         }
 
-        public static bool AskToContinue()
+        public bool AskToContinue()
         {
             Console.WriteLine("\nYou don't have enough shells left to sink the ship.");
             Console.Write("Do you still want to continue? (y/n) ");
             return GetYesOrNo();
         }
 
-        public static bool AskToPlayAgain()
+        public bool AskToPlayAgain()
         {
             Console.Write("\nWould you like to play again? (y/n) ");
             return GetYesOrNo();
         }
 
-        private static bool GetYesOrNo()
+        private bool GetYesOrNo()
         {
-            string? playerResponse = Console.ReadLine();
+            var playerResponse = Console.ReadLine();
             return playerResponse == null ? false : (playerResponse.ToLower() == "y");
         }
     }
